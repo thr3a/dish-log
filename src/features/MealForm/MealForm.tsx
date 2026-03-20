@@ -38,7 +38,7 @@ export const MealForm = ({ meal }: Props) => {
     initialValues: {
       category: meal?.category ?? '夕食',
       description: meal?.description ?? '',
-      isHomeCooked: meal?.isHomeCooked ?? false,
+      isHomeCooked: meal?.isHomeCooked ?? true,
       mealDate: meal?.mealDate ?? dayjs().format('YYYY-MM-DD'),
       title: meal?.title ?? ''
     },

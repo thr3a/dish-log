@@ -2,12 +2,12 @@ import '@mantine/core/styles.css';
 
 import { ColorSchemeScript, Container, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import type { Metadata } from 'next';
-import { Header } from './Header';
 import { Providers } from '@/providers';
 import { theme } from '@/theme';
+import { Header } from './Header';
 
 export const metadata: Metadata = {
-  title: 'Dish Log',
+  title: 'ごはんログ',
   description: '食べた料理の記録'
 };
 

@@ -7,8 +7,8 @@ import Link from 'next/link';
 export const Header = () => {
   return (
     <Group justify='space-between' py='md'>
-      <Anchor component={Link} href='/meals' c='dark' td='none'>
-        <Title order={3}>🍽 Dish Log</Title>
+      <Anchor component={Link} href='/' c='dark' td='none'>
+        <Title order={3}>ごはんログ 🍽</Title>
       </Anchor>
       <ActionIcon component={Link} href='/meals/new' size='lg' variant='filled'>
         <IconPlus size={20} />

@@ -23,10 +23,10 @@ export const POST = async (request: Request) => {
   const width = metadata.width ?? 0;
   const height = metadata.height ?? 0;
 
-  // サムネイル生成（最大幅400px）
+  // サムネイル生成（最大幅320px）
   const thumbnailBuffer = await sharp(buffer)
-    .resize({ width: 400, withoutEnlargement: true })
-    .jpeg({ quality: 80 })
+    .resize({ width: 320, withoutEnlargement: true })
+    .jpeg({ quality: 60 })
     .toBuffer();
 
   const thumbnailMeta = await sharp(thumbnailBuffer).metadata();

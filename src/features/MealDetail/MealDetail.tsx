@@ -32,14 +32,14 @@ export const MealDetail = ({ id }: Props) => {
     const res = await fetch(`/api/meals/${id}`, { method: 'DELETE' });
     if (res.ok) {
       await queryClient.invalidateQueries({ queryKey: ['meals'] });
-      router.push('/meals');
+      router.push('/');
     }
   };
 
   return (
     <Stack>
       <Group justify='space-between'>
-        <ActionIcon variant='subtle' component={Link} href='/meals'>
+        <ActionIcon variant='subtle' component={Link} href='/'>
           <IconArrowLeft />
         </ActionIcon>
         <ActionIcon variant='subtle' component={Link} href={`/meals/${id}/edit`}>

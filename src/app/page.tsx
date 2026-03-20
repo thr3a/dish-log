@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { MealList } from '@/features/MealList/MealList';
 
 export default function Page() {
-  redirect('/meals');
+  return <MealList />;
 }
