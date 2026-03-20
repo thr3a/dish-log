@@ -16,6 +16,7 @@
     "@aws-sdk/s3-request-presigner": "^3.1013.0",
     "@biomejs/biome": "^2.4.8",
     "@mantine/core": "^8.3.18",
+    "@mantine/dates": "^8.3.18",
     "@mantine/form": "^8.3.18",
     "@mantine/hooks": "^8.3.18",
     "@tabler/icons-react": "^3.40.0",
