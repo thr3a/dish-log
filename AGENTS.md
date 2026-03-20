@@ -26,6 +26,8 @@ AWS_ACCESS_KEY_ID=AKIASQ2**********************
 AWS_SECRET_ACCESS_KEY=**************
 AWS_REGION=ap-northeast-1
 AWS_S3_BUCKET=あなたのS3バケット名
+AWS_S3_BUCKET=
+AWS_S3_DEV_BUCKET=
 ```
 
 # 2. TypeScript / コーディングスタイル
