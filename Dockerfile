@@ -22,7 +22,6 @@ COPY . .
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV FIREBASE_SECRET_JSON=dummy
 
 RUN npm run build
 
