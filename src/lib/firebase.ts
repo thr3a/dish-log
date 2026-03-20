@@ -8,8 +8,9 @@ const getCredential = (): admin.credential.Credential => {
   return admin.credential.cert(JSON.parse(json));
 };
 
-if (!admin.apps.length) {
-  admin.initializeApp({ credential: getCredential() });
-}
+const getApp = (): admin.app.App => {
+  if (admin.apps.length) return admin.apps[0] as admin.app.App;
+  return admin.initializeApp({ credential: getCredential() });
+};
 
-export const db = admin.firestore();
+export const getDb = (): admin.firestore.Firestore => getApp().firestore();

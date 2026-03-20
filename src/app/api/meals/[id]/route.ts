@@ -2,7 +2,7 @@ import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { getPhotoUrl, S3_BUCKET, s3 } from '@/lib/s3';
 import type { Meal, MealPhoto, StoredMeal, StoredMealPhoto } from '@/types/meal';
 import { mealCategories } from '@/types/meal';
@@ -40,7 +40,7 @@ const enrichPhotos = async (storedPhotos: StoredMealPhoto[]): Promise<MealPhoto[
 
 export const GET = async (_req: NextRequest, { params }: RouteParams): Promise<NextResponse> => {
   const { id } = await params;
-  const doc = await db.collection('meals').doc(id).get();
+  const doc = await getDb().collection('meals').doc(id).get();
 
   if (!doc.exists) {
     return NextResponse.json({ error: '食事が見つかりません' }, { status: 404 });
@@ -58,7 +58,7 @@ export const GET = async (_req: NextRequest, { params }: RouteParams): Promise<N
 
 export const PUT = async (request: NextRequest, { params }: RouteParams): Promise<NextResponse> => {
   const { id } = await params;
-  const doc = await db.collection('meals').doc(id).get();
+  const doc = await getDb().collection('meals').doc(id).get();
 
   if (!doc.exists) {
     return NextResponse.json({ error: '食事が見つかりません' }, { status: 404 });
@@ -102,7 +102,7 @@ export const PUT = async (request: NextRequest, { params }: RouteParams): Promis
     updatedAt: now
   };
 
-  await db.collection('meals').doc(id).set(updated);
+  await getDb().collection('meals').doc(id).set(updated);
 
   const meal: Meal = {
     ...updated,
@@ -115,7 +115,7 @@ export const PUT = async (request: NextRequest, { params }: RouteParams): Promis
 
 export const DELETE = async (_req: NextRequest, { params }: RouteParams): Promise<NextResponse> => {
   const { id } = await params;
-  const doc = await db.collection('meals').doc(id).get();
+  const doc = await getDb().collection('meals').doc(id).get();
 
   if (!doc.exists) {
     return NextResponse.json({ error: '食事が見つかりません' }, { status: 404 });
@@ -131,7 +131,7 @@ export const DELETE = async (_req: NextRequest, { params }: RouteParams): Promis
     ])
   );
 
-  await db.collection('meals').doc(id).delete();
+  await getDb().collection('meals').doc(id).delete();
 
   return NextResponse.json({ success: true });
 };

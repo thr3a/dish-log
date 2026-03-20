@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { getPhotoUrl } from '@/lib/s3';
 import type { Meal, MealPhoto, StoredMeal, StoredMealPhoto } from '@/types/meal';
 import { mealCategories } from '@/types/meal';
@@ -38,7 +38,7 @@ const enrichPhotos = async (storedPhotos: StoredMealPhoto[]): Promise<MealPhoto[
   );
 
 export const GET = async () => {
-  const snapshot = await db.collection('meals').orderBy('mealDate', 'desc').get();
+  const snapshot = await getDb().collection('meals').orderBy('mealDate', 'desc').get();
 
   const meals: Meal[] = await Promise.all(
     snapshot.docs.map(async (doc) => {
@@ -81,7 +81,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
     updatedAt: now
   };
 
-  const ref = await db.collection('meals').add(stored);
+  const ref = await getDb().collection('meals').add(stored);
 
   const meal: Meal = {
     ...stored,
