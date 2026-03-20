@@ -1,8 +1,8 @@
 # Name of your application. Used to uniquely configure containers.
-service: nextjs-template
+service: dish-log
 
 # Name of the container image.
-image: thr3a/nextjs-template
+image: thr3a/dish-log
 
 # Deploy to these servers.
 servers:
@@ -19,22 +19,23 @@ servers:
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
 proxy:
   ssl: false
-  host: nextjs-template.turai.work
+  host: dishlog.turai.work
+  # Proxy connects to your container on port 80 by default.
   app_port: 3000
   healthcheck:
     path: /api/health
     interval: 20
     timeout: 3
-  # Proxy connects to your container on port 80 by default.
-  # app_port: 3000
+  buffering:
+    responses: false
+    requests: false
+    # responses: true
 
 # Credentials for your image host.
 registry:
+  # Specify the registry server, if you're not using Docker Hub
   server: dockerhub.local.turai.work:9490
   username: thr3a
-  # Specify the registry server, if you're not using Docker Hub
-  # server: registry.digitalocean.com / ghcr.io / ...
-  # username: my-user
 
   # Always use an access token rather than real password (pulled from .kamal/secrets).
   password:
@@ -43,19 +44,25 @@ registry:
 # Configure builder setup.
 builder:
   arch: amd64
+  dockerfile: Dockerfile
   # Pass in additional build args needed for your Dockerfile.
   # args:
-  #   RUBY_VERSION: <%= ENV["RBENV_VERSION"] || ENV["rvm_ruby_string"] || "#{RUBY_ENGINE}-#{RUBY_ENGINE_VERSION}" %>
+  #   RUBY_VERSION: <%= File.read('.ruby-version').strip %>
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 #
-# env:
-#   clear:
-#     DB_HOST: 192.168.0.2
-#   secret:
-#     - RAILS_MASTER_KEY
+env:
+  clear:
+    API_KEY_PUBLIC: hogehoge
+  secret:
+    - FIREBASE_SECRET_JSON
+    - FIREBASE_SECRET_DEV_JSON
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - AWS_S3_BUCKET
+    - AWS_S3_DEV_BUCKET
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
-# "bin/kamal app logs -r job" will tail logs from the first server in the job section.
+# "bin/kamal logs -r job" will tail logs from the first server in the job section.
 #
 # aliases:
 #   shell: app exec --interactive --reuse "bash"
@@ -83,24 +90,3 @@ ssh:
 
 # Use accessory services (secrets come from .kamal/secrets).
 #
-# accessories:
-#   db:
-#     image: mysql:8.0
-#     host: 192.168.0.2
-#     port: 3306
-#     env:
-#       clear:
-#         MYSQL_ROOT_HOST: '%'
-#       secret:
-#         - MYSQL_ROOT_PASSWORD
-#     files:
-#       - config/mysql/production.cnf:/etc/mysql/my.cnf
-#       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-#     directories:
-#       - data:/var/lib/mysql
-#   redis:
-#     image: valkey/valkey:8
-#     host: 192.168.0.2
-#     port: 6379
-#     directories:
-#       - data:/data
