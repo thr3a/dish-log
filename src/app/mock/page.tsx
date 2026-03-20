@@ -2,7 +2,7 @@
 
 import 'dayjs/locale/ja';
 import { Badge, Box, Card, Group, Image, Indicator, Stack, Text, Title } from '@mantine/core';
-import { Calendar } from '@mantine/dates';
+import { DatePicker } from '@mantine/dates';
 import '@mantine/dates/styles.css';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -240,12 +240,10 @@ const buildMealMap = (meals: Meal[]): Map<string, Meal[]> => {
 };
 
 export default function MockPage() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date('2026-03-21'));
+  const [selectedDate, setSelectedDate] = useState<string | null>('2026-03-21');
   const mealMap = buildMealMap(DUMMY_MEALS);
 
-  // selectedDate は Date オブジェクトだが、mealMap のキーは YYYY-MM-DD 文字列
-  const selectedDateStr = selectedDate ? dayjs(selectedDate).format('YYYY-MM-DD') : null;
-  const selectedMeals = selectedDateStr ? (mealMap.get(selectedDateStr) ?? []) : [];
+  const selectedMeals = selectedDate ? (mealMap.get(selectedDate) ?? []) : [];
 
   return (
     <Stack p='md' maw={700} mx='auto'>
@@ -253,9 +251,9 @@ export default function MockPage() {
 
       {/* カレンダー */}
       <Card withBorder>
-        <Calendar
+        <DatePicker
           value={selectedDate}
-          onChange={setSelectedDate}
+          onChange={(date) => setSelectedDate(date)}
           size='md'
           locale='ja'
           lang='ja'
