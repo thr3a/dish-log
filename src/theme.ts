@@ -7,44 +7,28 @@ export const theme = createTheme({
   fontFamily: '"Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif',
   components: {
     TextInput: {
-      styles: (theme: MantineTheme) => ({
+      styles: () => ({
         label: {
           fontWeight: 'bold'
-        },
-        root: {
-          marginBottom: theme.spacing.xs
         }
       })
     },
     NumberInput: {
-      styles: (theme: MantineTheme) => ({
+      styles: () => ({
         label: {
           fontWeight: 'bold'
-        },
-        root: {
-          marginBottom: theme.spacing.xs
         }
       })
     },
     RadioGroup: {
-      styles: (theme: MantineTheme) => ({
+      styles: () => ({
         label: {
           fontWeight: 'bold'
-        },
-        root: {
-          marginBottom: theme.spacing.xs
-        }
-      })
-    },
-    Checkbox: {
-      styles: (theme: MantineTheme) => ({
-        root: {
-          marginBottom: theme.spacing.sm
         }
       })
     },
     DatePicker: {
-      styles: (theme: MantineTheme) => ({
+      styles: (_theme: MantineTheme) => ({
         label: {
           fontWeight: 'bold'
         },

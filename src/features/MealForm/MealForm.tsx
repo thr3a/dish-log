@@ -12,8 +12,7 @@ import {
   Stack,
   Text,
   Textarea,
-  TextInput,
-  Title
+  TextInput
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconPhoto, IconX } from '@tabler/icons-react';
@@ -37,7 +36,7 @@ export const MealForm = ({ meal }: Props) => {
   const form = useForm<MealFormValues>({
     mode: 'controlled',
     initialValues: {
-      category: meal?.category ?? '昼食',
+      category: meal?.category ?? '夕食',
       description: meal?.description ?? '',
       isHomeCooked: meal?.isHomeCooked ?? false,
       mealDate: meal?.mealDate ?? dayjs().format('YYYY-MM-DD'),
