@@ -1,10 +1,32 @@
-import { NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 import { db } from '@/lib/firebase';
 import { getPhotoUrl } from '@/lib/s3';
 import type { Meal, MealPhoto, StoredMeal, StoredMealPhoto } from '@/types/meal';
+import { mealCategories } from '@/types/meal';
 
 export const dynamic = 'force-dynamic';
+
+// 写真オブジェクトのバリデーションスキーマ
+const storedMealPhotoSchema = z.object({
+  height: z.number(),
+  key: z.string(),
+  thumbnailHeight: z.number(),
+  thumbnailKey: z.string(),
+  thumbnailWidth: z.number(),
+  width: z.number()
+});
+
+// POST リクエストボディのバリデーションスキーマ
+const postBodySchema = z.object({
+  category: z.enum(mealCategories),
+  description: z.string().optional(),
+  isHomeCooked: z.boolean().optional(),
+  mealDate: z.string(),
+  photos: z.array(storedMealPhotoSchema).optional(),
+  title: z.string()
+});
 
 const enrichPhotos = async (storedPhotos: StoredMealPhoto[]): Promise<MealPhoto[]> =>
   Promise.all(
@@ -32,17 +54,22 @@ export const GET = async () => {
   return NextResponse.json(meals);
 };
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest): Promise<NextResponse> => {
   const body = await request.json();
-  const now = new Date().toISOString();
+  const result = postBodySchema.safeParse(body);
 
+  if (!result.success) {
+    return NextResponse.json({ errors: result.error.issues }, { status: 400 });
+  }
+
+  const now = new Date().toISOString();
   const stored: StoredMeal = {
-    category: body.category,
+    category: result.data.category,
     createdAt: now,
-    description: body.description ?? '',
-    isHomeCooked: body.isHomeCooked ?? false,
-    mealDate: body.mealDate,
-    photos: (body.photos ?? []).map((p: MealPhoto) => ({
+    description: result.data.description ?? '',
+    isHomeCooked: result.data.isHomeCooked ?? false,
+    mealDate: result.data.mealDate,
+    photos: (result.data.photos ?? []).map((p) => ({
       height: p.height,
       key: p.key,
       thumbnailHeight: p.thumbnailHeight,
@@ -50,7 +77,7 @@ export const POST = async (request: Request) => {
       thumbnailWidth: p.thumbnailWidth,
       width: p.width
     })),
-    title: body.title,
+    title: result.data.title,
     updatedAt: now
   };
 

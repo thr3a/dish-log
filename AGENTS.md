@@ -16,6 +16,7 @@
 - Lint: biome v2
 - 日付ライブラリ: Day.js
 - AI SDK by Vercel v6 https://deepwiki.com/vercel/ai
+- ダミー画像を差し込みたい場合はplacehold.jpを使う 例えば https://placehold.jp/300x150.jpg だと横300px 縦150pxのjpg画像になる
 
 .envの概要
 

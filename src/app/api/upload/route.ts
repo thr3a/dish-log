@@ -1,11 +1,11 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getPhotoUrl, S3_BUCKET, s3 } from '@/lib/s3';
 
-export const POST = async (request: Request) => {
+export const POST = async (request: NextRequest): Promise<NextResponse> => {
   const formData = await request.formData();
   const file = formData.get('file');
 
