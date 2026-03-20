@@ -38,8 +38,8 @@ registry:
   username: thr3a
 
   # Always use an access token rather than real password (pulled from .kamal/secrets).
-  # password:
-  #   - KAMAL_REGISTRY_PASSWORD
+  password:
+    - KAMAL_REGISTRY_PASSWORD
 
 # Configure builder setup.
 builder:
