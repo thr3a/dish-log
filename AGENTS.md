@@ -17,6 +17,17 @@
 - 日付ライブラリ: Day.js
 - AI SDK by Vercel v6 https://deepwiki.com/vercel/ai
 
+.envの概要
+
+```
+FIREBASE_SECRET_JSON='【JSON】'
+FIREBASE_SECRET_DEV_JSON='【JSON】'
+AWS_ACCESS_KEY_ID=AKIASQ2**********************
+AWS_SECRET_ACCESS_KEY=**************
+AWS_REGION=ap-northeast-1
+AWS_S3_BUCKET=あなたのS3バケット名
+```
+
 # 2. TypeScript / コーディングスタイル
 
 - 型定義は `interface` ではなく 必ず `type` を使う。
