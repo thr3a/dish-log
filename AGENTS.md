@@ -21,13 +21,18 @@
 .envの概要
 
 ```
-FIREBASE_SECRET_JSON='【JSON】'
-FIREBASE_SECRET_DEV_JSON='【JSON】'
-AWS_ACCESS_KEY_ID=AKIASQ2**********************
-AWS_SECRET_ACCESS_KEY=**************
-AWS_S3_BUCKET=あなたのS3バケット名
-AWS_S3_BUCKET=
-AWS_S3_DEV_BUCKET=
+# Firebase本番環境のサービスアカウントキー base64形式
+FIREBASE_SECRET_JSON='
+# Firebase開発環境のサービスアカウントキー base64形式
+FIREBASE_SECRET_DEV_JSON=
+# AWS IAMユーザーのアクセスキーID（S3への画像アップロード権限が必要）
+AWS_ACCESS_KEY_ID=AKIAxxxxxxxxxxxxxxxx
+# AWS IAMユーザーのシークレットアクセスキー（アクセスキーIDに対応するシークレット）
+AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# 本番環境用のS3バケット名（画像の保存先）
+AWS_S3_BUCKET=your-production-bucket-name
+# 開発環境用のS3バケット名（ローカル開発時の画像保存先）
+AWS_S3_DEV_BUCKET=your-development-bucket-name
 ```
 
 # 2. TypeScript / コーディングスタイル
