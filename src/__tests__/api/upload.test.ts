@@ -4,7 +4,7 @@ import * as handler from '@/app/api/upload/route';
 import { s3Mock } from '../helpers/s3Mock';
 
 vi.mock('@aws-sdk/s3-request-presigner', () => ({
-  getSignedUrl: vi.fn(async (_c: unknown, cmd: { input: { Key: string } }) => `https://mock-s3/${cmd.input.Key}`),
+  getSignedUrl: vi.fn(async (_c: unknown, cmd: { input: { Key: string } }) => `https://mock-s3/${cmd.input.Key}`)
 }));
 
 vi.mock('sharp', () => ({
@@ -12,8 +12,8 @@ vi.mock('sharp', () => ({
     metadata: vi.fn(async () => ({ width: 800, height: 600 })),
     resize: vi.fn().mockReturnThis(),
     jpeg: vi.fn().mockReturnThis(),
-    toBuffer: vi.fn(async () => Buffer.from('thumbnail-data')),
-  })),
+    toBuffer: vi.fn(async () => Buffer.from('thumbnail-data'))
+  }))
 }));
 
 beforeEach(() => {
@@ -29,12 +29,12 @@ describe('POST /api/upload', () => {
         const formData = new FormData();
         const res = await fetch({
           method: 'POST',
-          body: formData,
+          body: formData
         });
         expect(res.status).toBe(400);
         const body = await res.json();
         expect(body.error).toBeDefined();
-      },
+      }
     });
   });
 
@@ -48,7 +48,7 @@ describe('POST /api/upload', () => {
 
         const res = await fetch({
           method: 'POST',
-          body: formData,
+          body: formData
         });
         expect(res.status).toBe(200);
         const body = await res.json();
@@ -58,7 +58,7 @@ describe('POST /api/upload', () => {
         expect(body.thumbnailUrl).toMatch(/^https:\/\/mock-s3\//);
         expect(body.width).toBe(800);
         expect(body.height).toBe(600);
-      },
+      }
     });
   });
 
@@ -73,7 +73,7 @@ describe('POST /api/upload', () => {
         await fetch({ method: 'POST', body: formData });
 
         expect(s3Mock.commandCalls(PutObjectCommand)).toHaveLength(2);
-      },
+      }
     });
   });
 });

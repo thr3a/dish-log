@@ -4,16 +4,14 @@ import * as handler from '@/app/api/meals/[id]/route';
 import { s3Mock } from '../helpers/s3Mock';
 
 vi.mock('@aws-sdk/s3-request-presigner', () => ({
-  getSignedUrl: vi.fn(async (_c: unknown, cmd: { input: { Key: string } }) => `https://mock-s3/${cmd.input.Key}`),
+  getSignedUrl: vi.fn(async (_c: unknown, cmd: { input: { Key: string } }) => `https://mock-s3/${cmd.input.Key}`)
 }));
 
 const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
   const store = new Map<string, Map<string, unknown>>();
-  let idCounter = 0;
 
   const resetFirestoreMock = () => {
     store.clear();
-    idCounter = 0;
   };
 
   const seedFirestore = (collection: string, docs: Array<{ id: string } & Record<string, unknown>>) => {
@@ -26,7 +24,7 @@ const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
 
   const getCol = (name: string) => {
     if (!store.has(name)) store.set(name, new Map());
-    return store.get(name)!;
+    return store.get(name) ?? new Map<string, unknown>();
   };
 
   const mockGetDb = () => ({
@@ -38,7 +36,7 @@ const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
           return {
             exists: col.has(id),
             id,
-            data: () => data,
+            data: () => data
           };
         },
         set: async (data: unknown) => {
@@ -46,9 +44,9 @@ const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
         },
         delete: async () => {
           getCol(name).delete(id);
-        },
-      }),
-    }),
+        }
+      })
+    })
   });
 
   return { mockGetDb, resetFirestoreMock, seedFirestore };
@@ -64,7 +62,7 @@ const baseMeal = {
   isHomeCooked: false,
   photos: [],
   createdAt: '2024-01-01T00:00:00.000Z',
-  updatedAt: '2024-01-01T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z'
 };
 
 beforeEach(() => {
@@ -86,7 +84,7 @@ describe('GET /api/meals/[id]', () => {
         const body = await res.json();
         expect(body.id).toBe('meal-abc');
         expect(body.title).toBe('テスト食事');
-      },
+      }
     });
   });
 
@@ -97,7 +95,7 @@ describe('GET /api/meals/[id]', () => {
       async test({ fetch }) {
         const res = await fetch({ method: 'GET' });
         expect(res.status).toBe(404);
-      },
+      }
     });
   });
 });
@@ -116,14 +114,14 @@ describe('PUT /api/meals/[id]', () => {
           body: JSON.stringify({
             title: '更新後タイトル',
             category: '夕食',
-            mealDate: '2024-02-01',
-          }),
+            mealDate: '2024-02-01'
+          })
         });
         expect(res.status).toBe(200);
         const body = await res.json();
         expect(body.title).toBe('更新後タイトル');
         expect(body.category).toBe('夕食');
-      },
+      }
     });
   });
 
@@ -137,9 +135,9 @@ describe('PUT /api/meals/[id]', () => {
           width: 800,
           height: 600,
           thumbnailWidth: 320,
-          thumbnailHeight: 240,
-        },
-      ],
+          thumbnailHeight: 240
+        }
+      ]
     };
     seedFirestore('meals', [{ id: 'meal-abc', ...mealWithPhoto }]);
 
@@ -155,19 +153,17 @@ describe('PUT /api/meals/[id]', () => {
             title: 'テスト食事',
             category: '昼食',
             mealDate: '2024-01-01',
-            photos: [],
-          }),
+            photos: []
+          })
         });
         expect(res.status).toBe(200);
 
         // original と thumbnail の2回 DeleteObjectCommand が呼ばれる
         expect(s3Mock.commandCalls(DeleteObjectCommand)).toHaveLength(2);
-        const keys = s3Mock
-          .commandCalls(DeleteObjectCommand)
-          .map((c) => c.args[0].input.Key);
+        const keys = s3Mock.commandCalls(DeleteObjectCommand).map((c) => c.args[0].input.Key);
         expect(keys).toContain('photos/original.jpg');
         expect(keys).toContain('thumbnails/thumb.jpg');
-      },
+      }
     });
   });
 });
@@ -184,7 +180,7 @@ describe('DELETE /api/meals/[id]', () => {
         expect(res.status).toBe(200);
         const body = await res.json();
         expect(body.success).toBe(true);
-      },
+      }
     });
   });
 
@@ -198,9 +194,9 @@ describe('DELETE /api/meals/[id]', () => {
           width: 800,
           height: 600,
           thumbnailWidth: 320,
-          thumbnailHeight: 240,
-        },
-      ],
+          thumbnailHeight: 240
+        }
+      ]
     };
     seedFirestore('meals', [{ id: 'meal-with-photo', ...mealWithPhoto }]);
 
@@ -212,7 +208,7 @@ describe('DELETE /api/meals/[id]', () => {
         expect(res.status).toBe(200);
 
         expect(s3Mock.commandCalls(DeleteObjectCommand)).toHaveLength(2);
-      },
+      }
     });
   });
 });

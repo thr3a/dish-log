@@ -18,7 +18,9 @@ export type SeedDoc = { id: string } & Record<string, unknown>;
 export const buildFirestoreMock = (store: Map<string, Map<string, unknown>>, getNextId: () => string) => {
   const getCol = (name: string) => {
     if (!store.has(name)) store.set(name, new Map());
-    return store.get(name)!;
+    const col = store.get(name);
+    if (!col) throw new Error(`Collection "${name}" not found`);
+    return col;
   };
 
   return () => ({
@@ -35,7 +37,7 @@ export const buildFirestoreMock = (store: Map<string, Map<string, unknown>>, get
           return {
             exists: col.has(id),
             id,
-            data: () => data,
+            data: () => data
           };
         },
         set: async (data: unknown) => {
@@ -43,14 +45,14 @@ export const buildFirestoreMock = (store: Map<string, Map<string, unknown>>, get
         },
         delete: async () => {
           getCol(name).delete(id);
-        },
+        }
       }),
       orderBy: (field: string, direction: 'asc' | 'desc' = 'asc') => ({
         get: async () => {
           const entries = Array.from(getCol(name).entries());
           entries.sort(([, a], [, b]) => {
-            const av = (a as Record<string, unknown>)[field];
-            const bv = (b as Record<string, unknown>)[field];
+            const av = String((a as Record<string, unknown>)[field]);
+            const bv = String((b as Record<string, unknown>)[field]);
             if (av === bv) return 0;
             const cmp = av < bv ? -1 : 1;
             return direction === 'desc' ? -cmp : cmp;
@@ -58,11 +60,11 @@ export const buildFirestoreMock = (store: Map<string, Map<string, unknown>>, get
           return {
             docs: entries.map(([docId, data]) => ({
               id: docId,
-              data: () => data,
-            })),
+              data: () => data
+            }))
           };
-        },
-      }),
-    }),
+        }
+      })
+    })
   });
 };

@@ -4,7 +4,7 @@ import * as handler from '@/app/api/meals/route';
 import { s3Mock } from '../helpers/s3Mock';
 
 vi.mock('@aws-sdk/s3-request-presigner', () => ({
-  getSignedUrl: vi.fn(async (_c: unknown, cmd: { input: { Key: string } }) => `https://mock-s3/${cmd.input.Key}`),
+  getSignedUrl: vi.fn(async (_c: unknown, cmd: { input: { Key: string } }) => `https://mock-s3/${cmd.input.Key}`)
 }));
 
 const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
@@ -26,7 +26,9 @@ const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
 
   const getCol = (name: string) => {
     if (!store.has(name)) store.set(name, new Map());
-    return store.get(name)!;
+    const col = store.get(name);
+    if (!col) throw new Error(`Collection "${name}" not found`);
+    return col;
   };
 
   const mockGetDb = () => ({
@@ -40,8 +42,8 @@ const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
         get: async () => {
           const entries = Array.from(getCol(name).entries());
           entries.sort(([, a], [, b]) => {
-            const av = (a as Record<string, unknown>)[field];
-            const bv = (b as Record<string, unknown>)[field];
+            const av = String((a as Record<string, unknown>)[field]);
+            const bv = String((b as Record<string, unknown>)[field]);
             if (av === bv) return 0;
             const cmp = av < bv ? -1 : 1;
             return direction === 'desc' ? -cmp : cmp;
@@ -49,12 +51,12 @@ const { mockGetDb, resetFirestoreMock, seedFirestore } = vi.hoisted(() => {
           return {
             docs: entries.map(([docId, data]) => ({
               id: docId,
-              data: () => data,
-            })),
+              data: () => data
+            }))
           };
-        },
-      }),
-    }),
+        }
+      })
+    })
   });
 
   return { mockGetDb, resetFirestoreMock, seedFirestore };
@@ -77,7 +79,7 @@ describe('GET /api/meals', () => {
         expect(res.status).toBe(200);
         const body = await res.json();
         expect(body).toEqual([]);
-      },
+      }
     });
   });
 
@@ -92,7 +94,7 @@ describe('GET /api/meals', () => {
         isHomeCooked: false,
         photos: [],
         createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
       },
       {
         id: 'meal-2',
@@ -103,7 +105,7 @@ describe('GET /api/meals', () => {
         isHomeCooked: true,
         photos: [],
         createdAt: '2024-01-03T00:00:00.000Z',
-        updatedAt: '2024-01-03T00:00:00.000Z',
+        updatedAt: '2024-01-03T00:00:00.000Z'
       },
       {
         id: 'meal-3',
@@ -114,8 +116,8 @@ describe('GET /api/meals', () => {
         isHomeCooked: false,
         photos: [],
         createdAt: '2024-01-02T00:00:00.000Z',
-        updatedAt: '2024-01-02T00:00:00.000Z',
-      },
+        updatedAt: '2024-01-02T00:00:00.000Z'
+      }
     ]);
 
     await testApiHandler({
@@ -128,7 +130,7 @@ describe('GET /api/meals', () => {
         expect(body[0].mealDate).toBe('2024-01-03');
         expect(body[1].mealDate).toBe('2024-01-02');
         expect(body[2].mealDate).toBe('2024-01-01');
-      },
+      }
     });
   });
 });
@@ -145,15 +147,15 @@ describe('POST /api/meals', () => {
             title: 'テスト朝食',
             category: '朝食',
             mealDate: '2024-01-01',
-            isHomeCooked: true,
-          }),
+            isHomeCooked: true
+          })
         });
         expect(res.status).toBe(201);
         const body = await res.json();
         expect(body.title).toBe('テスト朝食');
         expect(body.id).toBeDefined();
         expect(body.photos).toEqual([]);
-      },
+      }
     });
   });
 
@@ -166,13 +168,13 @@ describe('POST /api/meals', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             category: '朝食',
-            mealDate: '2024-01-01',
-          }),
+            mealDate: '2024-01-01'
+          })
         });
         expect(res.status).toBe(400);
         const body = await res.json();
         expect(body.errors).toBeDefined();
-      },
+      }
     });
   });
 });
